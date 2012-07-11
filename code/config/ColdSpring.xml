@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	
+	<bean id="DocumentManager" class="model.DocumentManager" />
+	
+	<bean id="UserManager" class="model.UserManager" />
+	
+	<bean id="LogManager" class="model.LogManager" />
+	
+	<bean id="Notificationmanager" class="model.NotificationManager">
+		<constructor-arg name="UserManager"><ref bean="UserManager" /></constructor-arg>
+	</bean>
+	
+	
+	<!-- Include the workflow config file -->
+	<import resource="/config/Workflow.xml" />
+	
+</beans>

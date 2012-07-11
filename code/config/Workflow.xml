@@ -1,0 +1,170 @@
+<beans>
+	<!-- * * * * * WORKFLOW PROCESSOR * * * * -->
+
+	<bean id="WorkflowProcessor" class="model.WorkflowProcessor">
+		<constructor-arg name="registry">
+			<map>
+				<entry key="CreateDocument"><ref bean="CreateDocument" /></entry>
+				<entry key="ApproveDocument"><ref bean="ApproveDocument" /></entry>
+				<entry key="RejectDocument"><ref bean="RejectDocument" /></entry>
+				<entry key="ArchiveDocument"><ref bean="ArchiveDocument" /></entry>
+				<entry key="RestoreDocument"><ref bean="RestoreDocument" /></entry>
+			</map>
+		</constructor-arg>
+	</bean>
+	
+
+	<!-- * * * * WORKFLOWS * * * * -->
+	
+	<bean id="CreateDocument" class="model.Workflow">
+		<constructor-arg name="WorkflowConfig">
+			<map>
+				<entry key="Name"><value>CreateDocument</value></entry>
+				<entry key="Description"><value>Add a new document to the system</value></entry>
+			</map>
+		</constructor-arg>
+		
+		<constructor-arg name="Steps">
+			<list>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>renameFile</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>save</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="LogManager" /></entry>
+					<entry key="action"><value>logDocumentCreated</value></entry>
+				</map>
+			</list>
+		</constructor-arg>
+	</bean>	
+	
+	<bean id="ApproveDocument" class="model.Workflow">
+		<constructor-arg name="WorkflowConfig">
+			<map>
+				<entry key="Name"><value>ApproveDocument</value></entry>
+				<entry key="Description"><value>Approve a submitted document for display</value></entry>
+			</map>
+		</constructor-arg>
+		
+		<constructor-arg name="Steps">
+			<list>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>approveDocument</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>save</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="LogManager" /></entry>
+					<entry key="action"><value>logDocumentApproved</value></entry>
+				</map>
+				
+				<map>
+					<entry key="delegate"><ref bean="NotificationManager" /></entry>
+					<entry key="action"><value>sendApprovalNotification</value></entry>
+				</map>
+				
+			</list>
+		</constructor-arg>
+	</bean>	
+	
+	<bean id="RejectDocument" class="model.Workflow">
+		<constructor-arg name="WorkflowConfig">
+			<map>
+				<entry key="Name"><value>RejectDocument</value></entry>
+				<entry key="Description"><value>Reject a submitted document for display</value></entry>
+			</map>
+		</constructor-arg>
+		
+		<constructor-arg name="Steps">
+			<list>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>rejectDocument</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>save</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="LogManager" /></entry>
+					<entry key="action"><value>logDocumentRejected</value></entry>
+				</map>
+				<!-- Uncomment the map element below to add an email notification to this workflow -->
+				<!--
+				<map>
+					<entry key="delegate"><ref bean="NotificationManager" /></entry>
+					<entry key="action"><value>sendRejectionNotification</value></entry>
+				</map>
+				-->
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="ArchiveDocument" class="model.Workflow">
+		<constructor-arg name="WorkflowConfig">
+			<map>
+				<entry key="Name"><value>ArchiveDocument</value></entry>
+				<entry key="Description"><value>Changes a document status to archived</value></entry>
+			</map>
+		</constructor-arg>
+		
+		<constructor-arg name="Steps">
+			<list>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>archiveDocument</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>save</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="LogManager" /></entry>
+					<entry key="action"><value>logDocumentArchived</value></entry>
+				</map>
+				<!-- Uncomment the map element below to add an email notification to this workflow -->
+				<!--
+				<map>
+					<entry key="delegate"><ref bean="NotificationManager" /></entry>
+					<entry key="action"><value>sendArchivalNotification</value></entry>
+				</map>
+				-->
+			</list>
+		</constructor-arg>
+	</bean>		
+	
+	<bean id="RestoreDocument" class="model.Workflow">
+		<constructor-arg name="WorkflowConfig">
+			<map>
+				<entry key="Name"><value>RestoreDocument</value></entry>
+				<entry key="Description"><value>Restores a document from the archive</value></entry>
+			</map>
+		</constructor-arg>
+		
+		<constructor-arg name="Steps">
+			<list>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>restoreDocument</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="DocumentManager" /></entry>
+					<entry key="action"><value>save</value></entry>
+				</map>
+				<map>
+					<entry key="delegate"><ref bean="LogManager" /></entry>
+					<entry key="action"><value>logDocumentRestored</value></entry>
+				</map>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	
+</beans>
